@@ -29,7 +29,7 @@ this.child = new TestChild();
 module.exports = {
   'test uses verbose flag and parses output with path argument': function() {
     var proc = new TestProc(),
-        im = imagemagick.config({'childproc': proc}),
+        im = imagemagick.config(proc),
         features;
 
     im.identify('/tmp/fake.jpg', function(err, f) { features = f; });
