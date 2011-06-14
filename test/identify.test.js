@@ -40,5 +40,21 @@ module.exports = {
 
     proc.child.stdin.end.calls[0].with([buf],
       'Buffer passed in expected to be passed as is to the imagemagick child process');
+  },
+  'allows for asynchronous input': function() {
+    var proc = new TestProc(),
+        im = imagemagick.config(proc),
+        returned = false;
+
+    var child = im.identify(function() { returned = true; });
+    proc.spawn.calls[0].with('identify', ['-verbose', '-']);
+    assert.ok(!returned, 'Input not yet finished');
+
+    child.stdin.write('first chunk');
+    child.stdin.write('second chunk');
+    assert.ok(!returned, 'Input not yet finished.');
+
+    proc.child.run();
+    assert.ok(returned, 'Child process finished. Callback should have been executed.');
   }
 };
