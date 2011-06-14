@@ -56,5 +56,22 @@ module.exports = {
 
     proc.child.run();
     assert.ok(returned, 'Child process finished. Callback should have been executed.');
+  },
+  'spawns process with custom args': function() {
+    var proc = new TestProc(),
+        im = imagemagick.config(proc);
+
+    im.identify(['my', 'custom', 'args'], function() {});
+    proc.spawn.calls[0].with('identify', ['my', 'custom', 'args']);
+    proc.child.run();
+  },
+  'callback receives raw output when custom args given': function() {
+    var proc = new TestProc(),
+        im = imagemagick.config(proc),
+        output;
+
+    im.identify(['my', 'custom', 'args'], function(e, o) { output = o; });
+    proc.child.run("let's pretend imagemagick emitted this");
+    assert.equal("let's pretend imagemagick emitted this", output);
   }
 };
