@@ -73,5 +73,21 @@ module.exports = {
     im.identify(['my', 'custom', 'args'], function(e, o) { output = o; });
     proc.child.run("let's pretend imagemagick emitted this");
     assert.equal("let's pretend imagemagick emitted this", output);
+  },
+  'allows asynchronous input with custom args': function() {
+    var proc = new TestProc(),
+        im = imagemagick.config(proc),
+        output;
+
+    var child = im.identify(['-ping', '-'], function(e, o) { output = o; });
+    proc.spawn.calls[0].with('identify', ['-ping', '-']);
+    assert.ok(!output, 'Input not yet finished');
+
+    child.stdin.write('first chunk');
+    child.stdin.write('second chunk');
+    assert.ok(!output, 'Input not yet finished.');
+
+    proc.child.run("fake output");
+    assert.equal("fake output", output);
   }
 };
