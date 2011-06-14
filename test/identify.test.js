@@ -20,6 +20,7 @@ module.exports = {
     assert.equal(1278, features.width);
     assert.equal(626, features.height);
     assert.equal(8, features.depth);
+    assert.isUndefined(features.quality);
   },
   'test feeds string data into child proc': function() {
     var proc = new TestProc(),
@@ -89,5 +90,24 @@ module.exports = {
 
     proc.child.run("fake output");
     assert.equal("fake output", output);
+  },
+  'parses quality when present': function() {
+    var proc = new TestProc(),
+        im = imagemagick.config(proc),
+        features;
+
+    im.identify(function(err, f) { features = f; });
+    proc.child.run(
+      [ "Image: /tmp/fake.jpg",
+        "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
+        "  Geometry: 120x90+0+0",
+        "  Resolution: 72x72",
+        "  Depth: 8-bit",
+        "  Colorspace: RGB",
+        "  Quality: 78",
+        "  Orientation: Undefined",
+        "  Filesize: 8.07KB"].join("\n"));
+
+    assert.equal(0.78, features.quality);
   }
 };
