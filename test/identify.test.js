@@ -109,5 +109,25 @@ module.exports = {
         "  Filesize: 8.07KB"].join("\n"));
 
     assert.equal(0.78, features.quality);
+  },
+  'parses arbitrary info from im output': function() {
+    var proc = new TestProc(),
+        im = imagemagick.config(proc),
+        features;
+
+    im.identify(function(err, f) { features = f; });
+    proc.child.run(
+      [ "Image: /tmp/fake.jpg",
+        "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
+        "  Geometry: 120x90+0+0",
+        "  Depth: 8-bit",
+        "  Properties:",
+        "    exif:ApertureValue: 30/10",
+        "    exif:DateTime: 2011:05:06 12:05:14",
+        "  Colorspace: RGB"].join("\n"));
+
+    assert.equal('RGB', features['Colorspace']);
+    assert.equal('30/10', features['Properties']['exif:ApertureValue']);
+    assert.equal('2011:05:06 12:05:14', features['Properties']['exif:DateTime']);
   }
 };
