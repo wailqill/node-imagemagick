@@ -62,7 +62,11 @@ TestChild.prototype.run = function(data) {
       [ 'Image: /tmp/picture.jpg',
         '  Format: JPEG (Joint Photographic Experts Group JFIF format)',
         '  Geometry: 1024x768+0+0',
-        '  Depth: 8-bit'].join("\n")
+        '  Depth: 8-bit',
+        '  Properties:',
+        '    exif:Compression: 6',
+        '    exif:ExifImageLength: 1536',
+        '    exif:ExifImageWidth: 2048'].join("\n");
   }
   this.stdout.emitter.emit('data', data);
   this.emitter.emit('exit', 0, null);
