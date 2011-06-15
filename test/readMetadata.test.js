@@ -53,5 +53,23 @@ module.exports = {
 
     assert.equal(6, metadata.exif.compression);
     assert.equal(2, metadata.jpeg.colorspace);
+  },
+  'parses exif dates': function() {
+    var proc = new TestProc(),
+        im = imagemagick.config(proc),
+        metadata;
+
+    im.readMetadata('/tmp/fake.jpg', function(e, m) { metadata = m; });
+    proc.child.run(
+      [ "Image: /tmp/fake.jpg",
+        "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
+        "  Geometry: 1278x626+0+0",
+        "  Depth: 8-bit",
+        "  Properties:",
+        "    date:create: 2011-06-15T18:23:17-03:00",
+        "    exif:DateTime: 2011:05:06 12:05:14"].join("\n"));
+
+    assert.equal('2011-06-15T18:23:17-03:00', metadata.date.create);
+    assert.eql(new Date('2011-05-06 12:05:14 +0000'), metadata.exif.dateTime);
   }
 }
