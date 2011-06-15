@@ -35,5 +35,23 @@ module.exports = {
     proc.spawn.calls[0].with('identify', ['-verbose', '-']);
     proc.child.stdin.end.calls[0].with([buf],
       'Buffer passed in expected to be passed as is to the imagemagick child process');
+  },
+  'splits prefixes into objects': function() {
+    var proc = new TestProc(),
+        im = imagemagick.config(proc),
+        metadata;
+
+    im.readMetadata('/tmp/fake.jpg', function(e, m) { metadata = m; });
+    proc.child.run(
+      [ "Image: /tmp/fake.jpg",
+        "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
+        "  Geometry: 1278x626+0+0",
+        "  Depth: 8-bit",
+        "  Properties:",
+        "    exif:Compression: 6",
+        "    jpeg:colorspace: 2"].join("\n"));
+
+    assert.equal(6, metadata.exif.compression);
+    assert.equal(2, metadata.jpeg.colorspace);
   }
 }
