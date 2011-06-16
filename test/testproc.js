@@ -3,6 +3,7 @@ var assert = require('assert'),
 
 var toArray = function(args, n) { return Array.prototype.slice.call(args, n); };
 var arrayEqual = function(actual, expected, msg) {
+  if (undefined === msg) msg = JSON.stringify(actual) + " == " + JSON.stringify(expected)
   assert.equal(actual.length, expected.length, msg);
   for(i in actual) {
     if (actual[i] instanceof Array) arrayEqual(actual[i], expected[i], msg);
