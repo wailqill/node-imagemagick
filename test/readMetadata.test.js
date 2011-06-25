@@ -9,7 +9,7 @@ module.exports = {
         metadata;
 
     im.readMetadata('/tmp/fake.jpg', function(e, m) { metadata = m; });
-    proc.child.run(
+    proc.child().run(
       [ "Image: /tmp/fake.jpg",
         "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
         "  Geometry: 1278x626+0+0",
@@ -30,10 +30,10 @@ module.exports = {
         buf = new Buffer(16);
 
     im.readMetadata({data: buf}, function() {});
-    proc.child.run();
+    proc.child().run();
 
     proc.spawn.calls[0].with('identify', ['-verbose', '-']);
-    proc.child.stdin.end.calls[0].with([buf],
+    proc.child().stdin.end.calls[0].with([buf],
       'Buffer passed in expected to be passed as is to the imagemagick child process');
   },
   'splits prefixes into objects': function() {
@@ -42,7 +42,7 @@ module.exports = {
         metadata;
 
     im.readMetadata('/tmp/fake.jpg', function(e, m) { metadata = m; });
-    proc.child.run(
+    proc.child().run(
       [ "Image: /tmp/fake.jpg",
         "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
         "  Geometry: 1278x626+0+0",
@@ -60,7 +60,7 @@ module.exports = {
         metadata;
 
     im.readMetadata('/tmp/fake.jpg', function(e, m) { metadata = m; });
-    proc.child.run(
+    proc.child().run(
       [ "Image: /tmp/fake.jpg",
         "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
         "  Geometry: 1278x626+0+0",

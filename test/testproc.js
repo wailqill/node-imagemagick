@@ -75,9 +75,12 @@ TestChild.prototype.run = function(data) {
 
 var TestProc = function() {
   this.spawns = [];
-  var child = this.child = new TestChild();
+  var procs = [];
+  var num_spawned = 0;
 
-  this.spawn = funcstub(function() { return child; });
+  var children = this.children = function(n) { return procs[n] = procs[n] || new TestChild(); }
+  this.child = function() { return children(0); };
+  this.spawn = funcstub(function() { return children(num_spawned++); });
 };
 module.exports = TestProc;
 

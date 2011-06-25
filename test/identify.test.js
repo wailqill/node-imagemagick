@@ -9,7 +9,7 @@ module.exports = {
         features;
 
     im.identify('/tmp/fake.jpg', function(err, f) { features = f; });
-    proc.child.run(
+    proc.child().run(
       [ "Image: /tmp/fake.jpg",
         "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
         "  Geometry: 1278x626+0+0",
@@ -27,9 +27,9 @@ module.exports = {
         im = imagemagick.config(proc);
 
     im.identify({data: "testing"}, function() {});
-    proc.child.run();
+    proc.child().run();
 
-    proc.child.stdin.write.calls[0].with('testing', 'binary');
+    proc.child().stdin.write.calls[0].with('testing', 'binary');
   },
   'test feeds buffer data into child proc': function() {
     var proc = new TestProc(),
@@ -37,9 +37,9 @@ module.exports = {
         buf = new Buffer(32);
 
     im.identify({data: buf}, function() {});
-    proc.child.run();
+    proc.child().run();
 
-    proc.child.stdin.end.calls[0].with([buf],
+    proc.child().stdin.end.calls[0].with([buf],
       'Buffer passed in expected to be passed as is to the imagemagick child process');
   },
   'allows for asynchronous input': function() {
@@ -55,7 +55,7 @@ module.exports = {
     child.stdin.write('second chunk');
     assert.ok(!returned, 'Input not yet finished.');
 
-    proc.child.run();
+    proc.child(0).run();
     assert.ok(returned, 'Child process finished. Callback should have been executed.');
   },
   'spawns process with custom args': function() {
@@ -64,7 +64,7 @@ module.exports = {
 
     im.identify(['my', 'custom', 'args'], function() {});
     proc.spawn.calls[0].with('identify', ['my', 'custom', 'args']);
-    proc.child.run();
+    proc.child().run();
   },
   'callback receives raw output when custom args given': function() {
     var proc = new TestProc(),
@@ -72,7 +72,7 @@ module.exports = {
         output;
 
     im.identify(['my', 'custom', 'args'], function(e, o) { output = o; });
-    proc.child.run("let's pretend imagemagick emitted this");
+    proc.child().run("let's pretend imagemagick emitted this");
     assert.equal("let's pretend imagemagick emitted this", output);
   },
   'allows asynchronous input with custom args': function() {
@@ -88,7 +88,7 @@ module.exports = {
     child.stdin.write('second chunk');
     assert.ok(!output, 'Input not yet finished.');
 
-    proc.child.run("fake output");
+    proc.child().run("fake output");
     assert.equal("fake output", output);
   },
   'parses quality when present': function() {
@@ -97,7 +97,7 @@ module.exports = {
         features;
 
     im.identify(function(err, f) { features = f; });
-    proc.child.run(
+    proc.child().run(
       [ "Image: /tmp/fake.jpg",
         "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
         "  Geometry: 120x90+0+0",
@@ -116,7 +116,7 @@ module.exports = {
         features;
 
     im.identify(function(err, f) { features = f; });
-    proc.child.run(
+    proc.child().run(
       [ "Image: /tmp/fake.jpg",
         "  Format: JPEG (Joint Photographic Experts Group JFIF format)",
         "  Geometry: 120x90+0+0",

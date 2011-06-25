@@ -8,7 +8,7 @@ module.exports = {
         im = imagemagick.config(proc);
 
     im.resize({srcPath: '/tmp/fake.jpg', dstPath: '/tmp/fake-transformed.jpg', height: 240});
-    proc.child.run();
+    proc.child().run();
 
     proc.spawn.calls[0].with('convert', [
       '/tmp/fake.jpg',
