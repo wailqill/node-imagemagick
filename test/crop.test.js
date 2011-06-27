@@ -3,7 +3,7 @@ var assert = require('assert'),
     imagemagick = require('../lib/imagemagick'),
 
 module.exports = {
-  '': function() {
+  'works on srcPath and dstPath': function() {
     var proc = new TestProc,
         im = imagemagick.config(proc);
 
@@ -28,5 +28,44 @@ module.exports = {
       '+repage',
       '-quality', '80',
       '/tmp/cropped.jpg']);
+  },
+  'accepts srcData as buffer and spits asynchronous output': function() {
+    var proc = new TestProc,
+        im = imagemagick.config(proc),
+        buf = new Buffer(16),
+        acc = '',
+        ended = false;
+
+    var stream = im.crop({srcData: buf, width: 58, height: 58});
+    stream.on('data', function(chunk) { acc += chunk; });
+    stream.on('end', function() { ended = true; });
+
+    proc.spawn.calls[0].with('identify', ['-verbose', '-']);
+    proc.children(0).stdin.end.calls[0].with(buf);
+    proc.children(0).run();
+
+    proc.spawn.calls[1].with('convert', [
+      '-',
+      '-set', 'option:filter:blur', '0.8',
+      '-filter', 'Lagrange',
+      '-strip',
+      '-resize', 'x58',
+      '-gravity', 'Center',
+      '-crop', '58x58+0+0',
+      '+repage',
+      '-quality', '80',
+      'jpg:-']);
+    proc.children(1).stdin.end.calls[0].with(buf);
+    proc.children(1).stdout.emitter.emit('data', '1');
+    assert.equal(acc, '1');
+
+    proc.children(1).stdout.emitter.emit('data', '2');
+    proc.children(1).stdout.emitter.emit('data', '3');
+    assert.equal(acc, '123');
+    assert.ok(!ended);
+
+    proc.children(1).emitter.emit('exit');
+    assert.equal(acc, '123');
+    assert.ok(ended);
   }
 };
