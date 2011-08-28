@@ -49,5 +49,27 @@ module.exports = {
     proc.child().emitter.emit('exit', 0, null);
     assert.equal(emissions.length, 4);
     assert.eql(emissions[3], ['end', null]);
+  },
+  'returns stream from async output': function() {
+    var proc = new TestProc,
+        im = imagemagick.config(proc),
+        stream, output = [];
+
+    stream = im.resize({srcPath: '/tmp/fake.jpg', width: 224});
+    stream.on('data', function(chunk) { output.push(chunk); });
+    stream.on('end', function() { output = output.join(''); });
+
+    proc.child().stdout.emitter.emit('data', 'abc');
+    assert.equal(output.length, 1);
+    assert.eql(output[0], 'abc');
+
+    proc.child().stdout.emitter.emit('data', 'def');
+    proc.child().stdout.emitter.emit('data', 'gh');
+    assert.equal(output.length, 3);
+    assert.eql(output[1], 'def');
+    assert.eql(output[2], 'gh');
+
+    proc.child().emitter.emit('exit', 0, null);
+    assert.equal(output, 'abcdefgh');
   }
 };
