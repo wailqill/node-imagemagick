@@ -1,6 +1,6 @@
 var assert = require('assert'),
-    TestProc = require('./testproc')
-    imagemagick = require('../lib/imagemagick'),
+    TestProc = require('./testproc'),
+    imagemagick = require('../lib/imagemagick');
 
 module.exports = {
   'works on srcPath and dstPath': function() {

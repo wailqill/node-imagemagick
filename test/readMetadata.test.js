@@ -1,6 +1,6 @@
 var assert = require('assert'),
-    TestProc = require('./testproc')
-    imagemagick = require('../lib/imagemagick'),
+    TestProc = require('./testproc'),
+    imagemagick = require('../lib/imagemagick');
 
 module.exports = {
   'extracts exif metadata from verbose output': function() {
