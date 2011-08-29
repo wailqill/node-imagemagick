@@ -50,7 +50,7 @@ module.exports = {
     assert.equal(emissions.length, 4);
     assert.eql(emissions[3], ['end', null]);
   },
-  'returns stream from async output': function() {
+  'returns stream for async output': function() {
     var proc = new TestProc,
         im = imagemagick.config(proc),
         stream, output = [];

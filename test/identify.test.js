@@ -51,8 +51,8 @@ module.exports = {
     proc.spawn.calls[0].with('identify', ['-verbose', '-']);
     assert.ok(!returned, 'Input not yet finished');
 
-    child.stdin.write('first chunk');
-    child.stdin.write('second chunk');
+    child.write('first chunk');
+    child.write('second chunk');
     assert.ok(!returned, 'Input not yet finished.');
 
     proc.child(0).run();
@@ -84,8 +84,8 @@ module.exports = {
     proc.spawn.calls[0].with('identify', ['-ping', '-']);
     assert.ok(!output, 'Input not yet finished');
 
-    child.stdin.write('first chunk');
-    child.stdin.write('second chunk');
+    child.write('first chunk');
+    child.write('second chunk');
     assert.ok(!output, 'Input not yet finished.');
 
     proc.child().run("fake output");

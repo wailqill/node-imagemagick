@@ -45,17 +45,18 @@ var TestWriter = function () {
 
 var TestReader = function() {
   this.emitter = new EventEmitter();
-  this.addListener = this.emitter.addListener.bind(this.emitter);
+  this.on = this.addListener = this.emitter.addListener.bind(this.emitter);
   stub(this, 'setEncoding');
 };
 
 var TestChild = function() {
   this.emitter = new EventEmitter();
-  this.addListener = function() { this.emitter.addListener.apply(this.emitter, toArray(arguments)); }; 
-  this.stdout = new TestReader();
+  this.addListener = function() { this.emitter.addListener.apply(this.emitter, toArray(arguments)); };
+  var stdout = this.stdout = new TestReader();
   this.stderr = new TestReader();
   this.stdin = new TestWriter();
   stub(this, 'kill');
+  this.emitter.addListener('exit', function() { stdout.emitter.emit('end'); });
 };
 TestChild.prototype.run = function(data) {
   if (data === undefined) {
