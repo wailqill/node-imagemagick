@@ -51,7 +51,7 @@ var TestReader = function() {
 
 var TestChild = function() {
   this.emitter = new EventEmitter();
-  this.addListener = function() { this.emitter.addListener.apply(this.emitter, toArray(arguments)); };
+  this.addListener = this.emitter.addListener.bind(this.emitter);
   var stdout = this.stdout = new TestReader();
   this.stderr = new TestReader();
   this.stdin = new TestWriter();
