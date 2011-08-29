@@ -56,7 +56,7 @@ var TestChild = function() {
   this.stderr = new TestReader();
   this.stdin = new TestWriter();
   stub(this, 'kill');
-  this.emitter.addListener('exit', function() { stdout.emitter.emit('end'); });
+  this.emitter.addListener('exit', function() { stdout.emitter.emit('end', null); });
 };
 TestChild.prototype.run = function(data) {
   if (data === undefined) {
