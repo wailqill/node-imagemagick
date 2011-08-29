@@ -71,5 +71,18 @@ module.exports = {
 
     proc.child().emitter.emit('exit', 0, null);
     assert.equal(output, 'abcdefgh');
+  }, 'provides resulting data to callback' : function() {
+    var proc = new TestProc,
+        im = imagemagick.config(proc),
+        output;
+
+    im.resize({srcPath: '/tmp/fake.jpg', width: 224}, function(err, imgData) { output = imgData;});
+
+    proc.child().stdout.emitter.emit('data', 'abc');
+    proc.child().stdout.emitter.emit('data', 'de');
+    proc.child().stdout.emitter.emit('data', 'fgh');
+    proc.child().emitter.emit('exit', 0, null);
+
+    assert.equal(output, 'abcdefgh');
   }
 };
