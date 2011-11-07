@@ -387,8 +387,8 @@ exports.resizeArgs = function(options) {
     args.push('plane');
   }
   if (isJPEG && opt.interlace) {
-      args.push('-interlace');
-      args.push('line');
+    args.push('-interlace');
+    args.push('line');
   }
   if (isJPEG || opt.format === 'png') {
     args.push('-quality');
